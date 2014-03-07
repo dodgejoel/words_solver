@@ -36,11 +36,8 @@ def allowable_lengths(position):
                 acceptable_lengths.append(k-j+1)
             if count == HAND_SIZE:
                 break
-
-        # add code to make sure that this length of word will lead to a
-        # connected board.  OK to assume that the board was already connected.  
-
         return [length for length in acceptable_lengths if has_neighbor(position, length)]
+
 
 def has_neighbor(position, length):
     i, j = position
@@ -50,7 +47,6 @@ def has_neighbor(position, length):
         if i!= 0 and BOARD[i-1][j+k] != ' ' or i != len(BOARD[j+k])-1 and BOARD[i+1][j+k] != ' ':
             return True
     return False
-
 
 
 def find_legal_plays(position, length):
@@ -70,7 +66,6 @@ def find_legal_plays(position, length):
     
     return [word for word in WORD_LIST if re_pattern.match(word)
         and vertical_word_checker(position, word) and enough_letters_checker(word)] 
-    
 
 
 def vertical_word_checker(position, word):
@@ -88,16 +83,10 @@ def vertical_word_checker(position, word):
     return True
 
 
-
 def score_play(position, word):
     '''Return the score for playing the given word horizontally starting at
     position.'''
    
-    # this function does not compute the correct score.  Need to figure out
-    # where the bug is.  Distinction between k and j+k is all fucked up.
-    # Can sort this out when I have a minute.  Scoring plays is so fucking
-    # hard!
-
     def iter_scorer(nexter, position, word, multiplier, score):
         if len(word) == 0:
             return multiplier*score
@@ -124,20 +113,24 @@ def score_play(position, word):
             score += iter_scorer(lambda x: (x[0]+1, x[1]), (beg, j+k), side_word, 1, 0)
     return score
 
+
 def word_score(position):
     i, j = position
     if BOARD[i][j] != ' ':
         return 1
     return WORD_SCORE_MULTIPLIER.get(position, 1)
 
+
 def tile_score(ch):
     return TILE_VALUES[ch]
+
 
 def letter_score(position):
     i, j = position
     if BOARD[i][j] != ' ':
         return 1
     return LETTER_SCORE_MULTIPLIER.get(position, 1)
+
 
 def list_plays_and_scores(position):
     '''Return a list of tuples of the form (score, word, position) which
