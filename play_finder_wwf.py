@@ -142,3 +142,9 @@ def list_plays_and_scores(position):
         play_score_list += [(score_play(position, play), play, position) 
                             for play in find_legal_plays(position, length)]
     return play_score_list
+
+def flip_board():
+    return [[BOARD[i][j] for i in range(len(BOARD))] for j in range(len(BOARD))]
+
+
+
