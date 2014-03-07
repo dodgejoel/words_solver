@@ -1,8 +1,8 @@
 import re
 from game_constants_wwf import *
-from game1 import *
+from board_state import *
 
-# The variables imported from board_hand_data are BOARD, HAND and HAND_SIZE
+# The variables imported from board_state are BOARD, HAND and HAND_SIZE
 
 # The variables imported from game_constants_wwf are TILE_VALUES,
 # WORD_SCORE_MULTIPLIER and LETTER_SCORE_MULTIPLIER.
