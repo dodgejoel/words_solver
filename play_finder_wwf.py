@@ -1,5 +1,5 @@
 '''Functions to calculate legal plays in Words with Friends.  The approach is
-as follows.   
+as follows.
 
 1) for each position on the board, find all possible lengths of words which
 begin on that square and which connect to the currently played tiles.
@@ -39,7 +39,7 @@ def allowable_lengths(position):
         count = 0
         if BOARD[i][j] == ' ':
             count += 1
-        acceptable_lengths=[]
+        acceptable_lengths = []
         for k in range(j+1, row_length):
             if BOARD[i][k] == ' ':
                 count += 1
@@ -52,18 +52,21 @@ def allowable_lengths(position):
                     acceptable_lengths.append(k-j+1)
             if count == HAND_SIZE:
                 break
-        return [length for length in acceptable_lengths if has_neighbor(position, length)]
+        return [length for length in acceptable_lengths
+                if has_neighbor(position, length)]
 
 
 def has_neighbor(position, length):
     '''Boolean check whether a word beginning at position with this length will
     connect to the already played tiles on the board.'''
-    
+
     i, j = position
-    if j!= 0 and BOARD[i][j-1] != ' ' or j != len(BOARD)-1 and BOARD[i][j+1] != ' ':
+    if (j != 0 and BOARD[i][j-1] != ' '
+                or j != len(BOARD)-1 and BOARD[i][j+1] != ' '):
         return True
     for k in range(length):
-        if i!= 0 and BOARD[i-1][j+k] != ' ' or i != len(BOARD[j+k])-1 and BOARD[i+1][j+k] != ' ':
+        if (i != 0 and BOARD[i-1][j+k] != ' '
+                    or i != len(BOARD[j+k])-1 and BOARD[i+1][j+k] != ' '):
             return True
     return False
 
@@ -78,13 +81,17 @@ def find_legal_plays(position, length):
     re_pattern = re.compile(
         '^'+''.join(map(lambda x: hand_tiles if x == ' ' else x,
         BOARD[i][j:j+length]))+'$')
-    
+
     def enough_letters_checker(word):
+        '''Boolean check if the word can be played with tiles in hand.'''
+
         my_letters = BOARD[i][j:j+length]+HAND
         return all([word.count(ch) <= my_letters.count(ch) for ch in set(word)])
-    
-    return [word for word in WORD_LIST if re_pattern.match(word)
-        and vertical_word_checker(position, word) and enough_letters_checker(word)] 
+
+    return [word for word in WORD_LIST
+            if re_pattern.match(word)
+            and vertical_word_checker(position, word)
+            and enough_letters_checker(word)]
 
 
 def vertical_word_checker(position, word):
@@ -96,7 +103,7 @@ def vertical_word_checker(position, word):
         if BOARD[i][j+k] == ' ':
             column = [BOARD[m][j+k] for m in range(len(BOARD))]
             column[i] = word[k]
-            if not all([word in WORD_LIST or len(word) == 1 for word in 
+            if not all([word in WORD_LIST or len(word) == 1 for word in
                         ''.join(column).split()]):
                 return False
     return True
@@ -105,8 +112,10 @@ def vertical_word_checker(position, word):
 def score_play(position, word):
     '''Return the score for playing the given word starting at
     position.'''
-   
+
     def iter_scorer(nexter, position, word, multiplier, score):
+        '''Iterative form of the function. Schemey.'''
+
         if len(word) == 0:
             return multiplier*score
         return iter_scorer(
@@ -115,7 +124,7 @@ def score_play(position, word):
                     word[1:],
                     multiplier*word_score(position),
                     score+letter_score(position)*tile_score(word[0]))
-    i,j = position
+    i, j = position
     score = 0
     score += iter_scorer(lambda x: (x[0], x[1]+1), position, word, 1, 0)
     for k in [m for m in range(len(word)) if BOARD[i][j+m] == ' ']:
@@ -129,7 +138,8 @@ def score_play(position, word):
             column = [BOARD[m][j+k] for m in range(len(BOARD))]
             column[i] = word[k]
             side_word = ''.join([column[m] for m in range(beg, end+1)])
-            score += iter_scorer(lambda x: (x[0]+1, x[1]), (beg, j+k), side_word, 1, 0)
+            score += iter_scorer(
+                    lambda x: (x[0]+1, x[1]), (beg, j+k), side_word, 1, 0)
     return score
 
 
@@ -151,20 +161,20 @@ def word_score(position):
     return WORD_SCORE_MULTIPLIER.get(position, 1)
 
 
-def tile_score(ch):
+def tile_score(tile):
     '''Point value for the letter ch.'''
 
-    return TILE_VALUES[ch]
+    return TILE_VALUES[tile]
 
 
 def list_plays_and_scores(position):
     '''Return a list of tuples of the form (score, word, position) which
     enumerate the possible legal horizontal plays and the corresponding
     score.'''
-    
+
     play_score_list = []
     for length in allowable_lengths(position):
-        play_score_list += [(score_play(position, play), play, position) 
+        play_score_list += [(score_play(position, play), play, position)
                             for play in find_legal_plays(position, length)]
     return play_score_list
 
@@ -173,7 +183,8 @@ def flip_board():
     calculate vertical plays as well.'''
 
     global BOARD
-    BOARD = [[BOARD[i][j] for i in range(len(BOARD))] for j in range(len(BOARD))]
+    BOARD = [[BOARD[i][j] for i in range(len(BOARD))]
+                                    for j in range(len(BOARD))]
 
 
 
