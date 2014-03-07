@@ -2,3 +2,7 @@ This is a script which calculates all of the legal plays on a given Words with
 Friends board and prints out a list of them sorted by score.  All you have to
 do is enter the current board state and the tiles in your hand into the file
 board_state.py and then run words_main_script.py. 
+
+Note: Currently no implementation of blank tiles.  This is the next thing I
+would like to add.
+
