@@ -1,6 +1,6 @@
 import re
 from game_constants_wwf import *
-from board_state import *
+from game1 import *
 
 # The variables imported from board_state are BOARD, HAND and HAND_SIZE
 
@@ -30,10 +30,12 @@ def allowable_lengths(position):
             if BOARD[i][k] == ' ':
                 count += 1
             if k == row_length-1:
-                acceptable_lengths.append(k-j+1)
+                if count:
+                    acceptable_lengths.append(k-j+1)
                 break
             if BOARD[i][k+1] == ' ':
-                acceptable_lengths.append(k-j+1)
+                if count:
+                    acceptable_lengths.append(k-j+1)
             if count == HAND_SIZE:
                 break
         return [length for length in acceptable_lengths if has_neighbor(position, length)]
@@ -144,7 +146,9 @@ def list_plays_and_scores(position):
     return play_score_list
 
 def flip_board():
-    return [[BOARD[i][j] for i in range(len(BOARD))] for j in range(len(BOARD))]
+    global BOARD
+    BOARD = [[BOARD[i][j] for i in range(len(BOARD))] for j in range(len(BOARD))]
+
 
 
 
