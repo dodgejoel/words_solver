@@ -1,20 +1,34 @@
+'''Functions to calculate legal plays in Words with Friends.  The approach is
+as follows.   
+
+1) for each position on the board, find all possible lengths of words which
+begin on that square and which connect to the currently played tiles.
+
+2) For each such length, find all words you can play that fill in a legal word
+of that length starting in that position and which make a legal word in that
+row.
+
+3) For each tile you put down, check to make sure that the vertical words
+formed are legal plays.
+
+I believe that this search could be made smarter so as to take less time,
+perhaps by starting from the currently played tiles and building words off of
+them.  This will take a little more care to organize though.
+
+'''
+
 import re
 from game_constants_wwf import *
-from game1 import *
+from board_state import *
 
 # The variables imported from board_state are BOARD, HAND and HAND_SIZE
-
 # The variables imported from game_constants_wwf are TILE_VALUES,
 # WORD_SCORE_MULTIPLIER and LETTER_SCORE_MULTIPLIER.
 
 def allowable_lengths(position):
     '''Returns a list of the possible lengths that a word beginning at position
     can have.  Counts number of blank spaces to make sure you have enough tiles
-    in hand to form the word.  It's not clear to me that there isn't an easier
-    way to do this.  This is just an implementation of the most obvious method
-    for finding which lengths are possible.
-    
-    BOARD and HAND_SIZE are both global variables.
+    in hand to form the word.
     '''
 
     i, j = position
@@ -42,6 +56,9 @@ def allowable_lengths(position):
 
 
 def has_neighbor(position, length):
+    '''Boolean check whether a word beginning at position with this length will
+    connect to the already played tiles on the board.'''
+    
     i, j = position
     if j!= 0 and BOARD[i][j-1] != ' ' or j != len(BOARD)-1 and BOARD[i][j+1] != ' ':
         return True
@@ -52,7 +69,7 @@ def has_neighbor(position, length):
 
 
 def find_legal_plays(position, length):
-    '''Return a list of all the words of given length starting at position which
+    '''Return a list of the words of this length starting at position which
     can be played horizontally given the current BOARD state and your current
     HAND and for which all the vertically formed words are also legal.'''
 
@@ -71,8 +88,8 @@ def find_legal_plays(position, length):
 
 
 def vertical_word_checker(position, word):
-    '''Return true if all of the vertical words formed by playing word at
-    position are in the word list.  Return False otherwise.'''
+    '''Boolean check if the vertical words formed by playing word at
+    position are in the word list.'''
 
     i, j = position
     for k in range(len(word)):
@@ -86,7 +103,7 @@ def vertical_word_checker(position, word):
 
 
 def score_play(position, word):
-    '''Return the score for playing the given word horizontally starting at
+    '''Return the score for playing the given word starting at
     position.'''
    
     def iter_scorer(nexter, position, word, multiplier, score):
@@ -116,7 +133,18 @@ def score_play(position, word):
     return score
 
 
+def letter_score(position):
+    '''Double/Triple Letter Score multiplier.'''
+
+    i, j = position
+    if BOARD[i][j] != ' ':
+        return 1
+    return LETTER_SCORE_MULTIPLIER.get(position, 1)
+
+
 def word_score(position):
+    '''Double/Triple Word Score multiplier.'''
+
     i, j = position
     if BOARD[i][j] != ' ':
         return 1
@@ -124,14 +152,9 @@ def word_score(position):
 
 
 def tile_score(ch):
+    '''Point value for the letter ch.'''
+
     return TILE_VALUES[ch]
-
-
-def letter_score(position):
-    i, j = position
-    if BOARD[i][j] != ' ':
-        return 1
-    return LETTER_SCORE_MULTIPLIER.get(position, 1)
 
 
 def list_plays_and_scores(position):
@@ -146,6 +169,9 @@ def list_plays_and_scores(position):
     return play_score_list
 
 def flip_board():
+    '''Persistently flip global BOARD.  Enables the reuse of the above code to
+    calculate vertical plays as well.'''
+
     global BOARD
     BOARD = [[BOARD[i][j] for i in range(len(BOARD))] for j in range(len(BOARD))]
 
