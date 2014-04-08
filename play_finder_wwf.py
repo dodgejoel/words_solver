@@ -19,10 +19,10 @@ them.  This will take a little more care to organize though.
 
 import re
 from game_constants_wwf import *
-from board_state import *
+from game1 import *
 
 # The variables imported from board_state are BOARD, HAND and HAND_SIZE
-# The variables imported from game_constants_wwf are TILE_VALUES,
+# The variables imported from game_constants_wwf are WORD_LIST, TILE_VALUES,
 # WORD_SCORE_MULTIPLIER and LETTER_SCORE_MULTIPLIER.
 
 def allowable_lengths(position):
@@ -88,7 +88,7 @@ def find_legal_plays(position, length):
         my_letters = BOARD[i][j:j+length]+HAND
         return all([word.count(ch) <= my_letters.count(ch) for ch in set(word)])
 
-    return [word for word in WORD_LIST
+    return [word for word in WORD_LIST[length]
             if re_pattern.match(word)
             and vertical_word_checker(position, word)
             and enough_letters_checker(word)]
@@ -103,7 +103,7 @@ def vertical_word_checker(position, word):
         if BOARD[i][j+k] == ' ':
             column = [BOARD[m][j+k] for m in range(len(BOARD))]
             column[i] = word[k]
-            if not all([word in WORD_LIST or len(word) == 1 for word in
+            if not all([len(word) == 1 or word in WORD_LIST[len(word)] for word in
                         ''.join(column).split()]):
                 return False
     return True

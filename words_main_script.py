@@ -1,7 +1,6 @@
 '''The main script which runs functions from play_finder_wwf and prints out the
 results.'''
 
-
 import play_finder_wwf
 
 N = len(play_finder_wwf.BOARD)
