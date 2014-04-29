@@ -1,12 +1,12 @@
 '''This file contains the definitions of the constants used in scoring a given
 play.  It will be imported directly into the namespace of play_finder_wwf.'''
 
-WORD_LIST=dict([(i, []) for i in range(2, 16)])
+WORD_LIST=dict([(i, set()) for i in range(2, 16)])
 
 with open('word_list_wwf.txt') as wwf_file:
     for line in wwf_file:
         line=line.strip()
-        WORD_LIST[len(line)].append(line)
+        WORD_LIST[len(line)].add(line)
 
 WORD_SCORE_MULTIPLIER = {}
 WORD_SCORE_MULTIPLIER[(0, 3)] = WORD_SCORE_MULTIPLIER[(0, 11)] = 3
