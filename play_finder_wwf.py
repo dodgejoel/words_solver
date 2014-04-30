@@ -1,5 +1,6 @@
-'''Functions to calculate legal plays in Words with Friends.  The approach is
-as follows.
+'''
+Functions to calculate legal plays in Words with Friends.  The approach is
+as follows:
 
 1) for each position on the board, find all possible lengths of words which
 begin on that square and which connect to the currently played tiles.
@@ -10,11 +11,6 @@ row.
 
 3) For each tile you put down, check to make sure that the vertical words
 formed are legal plays.
-
-I believe that this search could be made smarter so as to take less time,
-perhaps by starting from the currently played tiles and building words off of
-them.  This will take a little more care to organize though.
-
 '''
 
 import re
@@ -26,7 +22,8 @@ from game2 import *
 # WORD_SCORE_MULTIPLIER and LETTER_SCORE_MULTIPLIER.
 
 def allowable_lengths(position):
-    '''Returns a list of the possible lengths that a word beginning at position
+    '''
+    Returns a list of the possible lengths that a word beginning at position
     can have.  Counts number of blank spaces to make sure you have enough tiles
     in hand to form the word.
     '''
@@ -185,7 +182,3 @@ def flip_board():
     global BOARD
     BOARD = [[BOARD[i][j] for i in range(len(BOARD))]
                                     for j in range(len(BOARD))]
-
-
-
-
