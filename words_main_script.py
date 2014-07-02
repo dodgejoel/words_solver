@@ -1,7 +1,9 @@
 '''The main script which runs functions from play_finder_wwf and prints out the
 results.'''
-
+from time import time
 import play_finder_wwf
+
+t = time()
 
 print('\nTOP SCORING HORIZONTAL AND VERTICAL PLAYS')
 print('FORMAT = (score, word, starting (i, j) position)')
@@ -29,3 +31,6 @@ print('\nVERTICAL PLAYS')
 for i in VER_PLAYS[-5:]:
     i = (i[0], i[1], (i[2][1], i[2][0]))
     print(i)
+
+
+print('\n\n', time() - t)

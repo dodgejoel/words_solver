@@ -18,8 +18,9 @@ from game_constants_wwf import *
 from game2 import *
 
 # The variables imported from board_state are BOARD, HAND and HAND_SIZE
-# The variables imported from game_constants_wwf are WORD_LIST, TILE_VALUES,
-# WORD_SCORE_MULTIPLIER and LETTER_SCORE_MULTIPLIER.
+# The variables imported from game_constants_wwf are WORD_LIST_BY_LEN,
+# WORD_LIST_BY_HASH, TILE_VALUES, WORD_SCORE_MULTIPLIER,
+# LETTER_SCORE_MULTIPLIER and h.
 
 def allowable_lengths(position):
     '''
@@ -100,8 +101,8 @@ def vertical_word_checker(position, word):
         if BOARD[i][j+k] == ' ':
             column = [BOARD[m][j+k] for m in range(len(BOARD))]
             column[i] = word[k]
-            if not all([len(word) == 1 or word in WORD_LIST[len(word)] for word in
-                        ''.join(column).split()]):
+            if not all([len(word) == 1 or word in WORD_LIST[len(word)]
+                    for word in ''.join(column).split()]):
                 return False
     return True
 
